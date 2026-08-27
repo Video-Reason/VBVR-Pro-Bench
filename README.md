@@ -6,7 +6,7 @@
     <a href="https://video-reason.com/?v=pro" target="_blank">
         <img alt="Project Page" src="https://img.shields.io/badge/Project%20-%20Homepage-4285F4" height="20" />
     </a>
-    <a href="https://huggingface.co/papers/2608.26105" target="_blank">
+    <a href="https://arxiv.org/abs/2608.26105" target="_blank">
         <img alt="arXiv" src="https://img.shields.io/badge/arXiv-VBVR_Pro-red?logo=arxiv" height="20" />
     </a>
     <a href="https://github.com/Video-Reason/VBVR-Pro" target="_blank">
