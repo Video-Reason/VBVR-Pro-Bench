@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+dist/
+build/
+.venv/
+venv/
+
+# Evaluation outputs
+video_eval_results*/
+interleave_eval_results*/
+*_vbvr_results.json
+all_models_summary.json
+
+# Model weights / caches pulled at runtime
+easyocr_models/
+.EasyOCR/
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
