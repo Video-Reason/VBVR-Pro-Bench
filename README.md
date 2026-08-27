@@ -21,7 +21,7 @@
     <a href="https://huggingface.co/datasets/Video-Reason/VBVR-Pro-RL" target="_blank">
         <img alt="Dataset" src="https://img.shields.io/badge/%F0%9F%A4%97%20_VBVR_Pro_Dataset-RL-ffc107?color=ffc107&logoColor=white" height="20" />
     </a>
-    <a href="https://huggingface.co/datasets/Video-Reason/VBVR-Pro-Bench/tree/main" target="_blank">
+    <a href="https://huggingface.co/datasets/Video-Reason/VBVR-Pro-Bench" target="_blank">
         <img alt="Bench Data" src="https://img.shields.io/badge/%F0%9F%A4%97%20_VBVR_Pro_Bench-Data-ffc107?color=ffc107&logoColor=white" height="20" />
     </a>
     <a href="https://video-reason.com/pro/bench/#leaderboard" target="_blank">
