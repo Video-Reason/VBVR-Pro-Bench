@@ -241,7 +241,7 @@ noticeably slower without it. `--device cpu` still works if no GPU is available.
 
 Each model produces `{output_dir}/{model_name}_vbvr_results.json`. With
 `--models_base`, the video entry point additionally writes
-`all_models_summary.json` alongside it.
+`all_models_summary.json` together with it.
 
 ```json
 {
