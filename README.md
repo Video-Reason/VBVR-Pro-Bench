@@ -241,7 +241,7 @@ noticeably slower without it. `--device cpu` still works if no GPU is available.
 
 Each model produces `{output_dir}/{model_name}_vbvr_results.json`. With
 `--models_base`, the video entry point additionally writes
-`all_models_summary.json` together with it.
+`all_models_summary.json` alongside it.
 
 ```json
 {
@@ -289,7 +289,16 @@ VBVR-Pro-Bench/
 ├── run_evaluation_video.py         # Entry point: video (I2V) setting
 ├── run_evaluation_image.py         # Entry point: interleaved image setting
 ├── requirements.txt                # Python dependencies
-└── vbvr_bench/
+├── visualization/                  # Optional: render a scored video as a HUD explainer
+│   ├── process_video.py            # One-call entry point for a single video
+│   ├── score_video.py              # Runs the evaluator on every video prefix
+│   ├── adapters.py                 # Evaluator fields -> components, formulas, events
+│   ├── semantics.py                # Task-specific labels and failure wording
+│   ├── schema.py                   # Frontend data contract
+│   ├── export_timeline.py          # timeline.json -> explanation.json
+│   ├── render_explanation.py       # explanation -> 1920x1080 HUD MP4
+│   └── hudkit.py                   # HUD drawing and H.264 writer
+└── vbvr_pro_bench/
     ├── __init__.py                 # VBVRBench class
     ├── utils.py                    # Shared CV primitives (color/shape/frame ops)
     └── evaluators/
@@ -300,11 +309,11 @@ VBVR-Pro-Bench/
 
 ```
 
-`TASK_EVALUATOR_MAP` in `vbvr_bench/evaluators/__init__.py` maps each of the 100
+`TASK_EVALUATOR_MAP` in `vbvr_pro_bench/evaluators/__init__.py` maps each of the 100
 task names to its evaluator class. To score a single instance directly:
 
 ```python
-from vbvr_bench.evaluators import get_evaluator
+from vbvr_pro_bench.evaluators import get_evaluator
 
 task = "G-45_key_door_matching_data-generator"
 gt_dir = f"/path/to/VBVR-Pro-Bench-Video/In-Domain_50/{task}/00000"
@@ -320,6 +329,30 @@ result = evaluator.evaluate({
 print(result["score"])    # float in [0, 1]
 print(result["details"])  # per-evaluator diagnostics
 ```
+
+---
+
+## 4. Visualization (optional)
+
+Renders a video into a 1920x1080 HUD that shows the score moving as the video
+plays, and which component caused each change.
+
+```bash
+python visualization/process_video.py \
+    --video      /path/to/model_outputs/In-Domain_50/{task_name}/00000.mp4 \
+    --task       {task_name} \
+    --gt-dir     /path/to/VBVR-Pro-Bench-Video/In-Domain_50/{task_name}/00000 \
+    --output-dir ./explanation_out
+```
+
+The reference video, frames, `metadata.json` and `prompt.txt` are read from
+`--gt-dir`. The output directory holds `timeline.json`, `explanation.json`,
+`explanation.mp4` and the decoded `frames/`.
+
+
+> **Note:** The HUD is drawn with DejaVu fonts, picked up from the standard
+> system font directories. If they are not installed, or you want to use a
+> different font, point `VBVR_FONT_DIR` at the directory holding your own.
 
 ---
 

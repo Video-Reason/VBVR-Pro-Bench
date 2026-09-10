@@ -11,3 +11,6 @@ norfair>=2.3.0          # multi-object tracking
 
 easyocr>=1.6.0          # on-screen text / digit reading (pulls in torch)
 ddddocr>=1.4.0
+
+# Visualization (visualization/): HUD rendering to H.264 MP4
+imageio-ffmpeg>=0.4.0

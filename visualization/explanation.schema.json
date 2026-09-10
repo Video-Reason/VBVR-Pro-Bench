@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/Video-Reason/VBVR-Pro-Bench/blob/main/visualization/explanation.schema.json",
+  "title": "VBVR explanation timeline",
+  "type": "object",
+  "required": ["schema_version", "task_name", "final_formula_check", "frames"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "task_name": {"type": "string"},
+    "source_timeline": {"type": "string"},
+    "n_source_steps": {"type": "integer", "minimum": 1},
+    "n_explanation_frames": {"type": "integer", "minimum": 1},
+    "final_formula_check": {
+      "type": "object",
+      "required": ["evaluator", "recomputed", "difference"],
+      "properties": {
+        "evaluator": {"type": "number"},
+        "recomputed": {"type": "number"},
+        "difference": {"type": "number", "minimum": 0}
+      }
+    },
+    "frames": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/explanation"}
+    }
+  },
+  "$defs": {
+    "component": {
+      "type": "object",
+      "required": ["id", "label", "value", "kind", "timing"],
+      "properties": {
+        "id": {"type": "string"},
+        "label": {"type": "string", "maxLength": 40},
+        "value": {"type": "number"},
+        "kind": {"enum": ["quality", "gate", "penalty", "count", "status"]},
+        "timing": {"enum": ["live", "cumulative", "final"]},
+        "weight": {"type": ["number", "null"]},
+        "note": {"type": "string"},
+        "children": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "event": {
+      "type": "object",
+      "required": ["frame", "kind", "component", "title", "detail"],
+      "properties": {
+        "frame": {"type": "integer", "minimum": 1},
+        "kind": {"enum": ["reward", "penalty", "milestone", "verdict", "info"]},
+        "component": {"type": "string"},
+        "title": {"type": "string", "maxLength": 48},
+        "detail": {"type": "string", "maxLength": 120},
+        "evidence": {
+          "type": ["object", "null"],
+          "properties": {
+            "kind": {"enum": ["grid_cell", "bbox", "point", "mask", "trajectory", "frame"]},
+            "data": {"type": "object"}
+          }
+        }
+      }
+    },
+    "explanation": {
+      "type": "object",
+      "required": ["task_name", "title", "frame", "final_score", "components", "formula", "events"],
+      "properties": {
+        "task_name": {"type": "string"},
+        "title": {"type": "string", "maxLength": 40},
+        "frame": {"type": "integer", "minimum": 1},
+        "final_score": {"type": "number"},
+        "components": {"type": "array", "items": {"$ref": "#/$defs/component"}},
+        "formula": {
+          "type": "object",
+          "required": ["expression", "display", "inputs"],
+          "properties": {
+            "expression": {"type": "string"},
+            "display": {"type": "string"},
+            "inputs": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "events": {"type": "array", "items": {"$ref": "#/$defs/event"}},
+        "source_details": {"type": "object"}
+      }
+    }
+  }
+}

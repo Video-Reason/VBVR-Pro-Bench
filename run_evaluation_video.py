@@ -59,10 +59,10 @@ class NumpyEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-# Add VBVR-Bench to path
+# Add the repository root to sys.path
 sys.path.insert(0, str(Path(__file__).parent))
 
-from vbvr_bench.evaluators import (
+from vbvr_pro_bench.evaluators import (
     get_evaluator, TASK_EVALUATOR_MAP, get_task_category,
     is_out_of_domain, get_split,
 )
