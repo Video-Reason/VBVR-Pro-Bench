@@ -57,7 +57,7 @@ class NumpyEncoder(json.JSONEncoder):
 sys.path.insert(0, str(Path(__file__).parent))
 
 from vbvr_pro_bench.evaluators import (
-    get_evaluator, TASK_EVALUATOR_MAP, get_task_category,
+    get_evaluator, TASK_EVALUATOR_MAP, get_task_category, get_task_categories,
     is_out_of_domain, get_split,
 )
 
@@ -100,10 +100,16 @@ def _new_summary():
 
 
 def _agg(summary, split, task_name, category, score):
+    # Multi-label: a task's score is shared equally across its categories
+    cats = get_task_categories(task_name)
+    w = 1.0 / len(cats)
     for key in (split, "overall"):
         summary[key]["scores"].append(score)
         summary[key]["by_task"].setdefault(task_name, []).append(score)
-        summary[key]["by_category"].setdefault(category, []).append(score)
+        for c in cats:
+            acc = summary[key]["by_category"].setdefault(c, [0.0, 0.0])
+            acc[0] += score * w
+            acc[1] += w
 
 
 def _finalize(summary):
@@ -111,9 +117,10 @@ def _finalize(summary):
         sc = summary[sp]["scores"]
         summary[sp]["mean_score"] = sum(sc) / len(sc) if sc else 0.0
         summary[sp]["num_samples"] = len(sc)
-        for d in ("by_task", "by_category"):
-            for k, v in list(summary[sp][d].items()):
-                summary[sp][d][k] = sum(v) / len(v) if isinstance(v, list) and v else 0.0
+        for k, v in list(summary[sp]["by_task"].items()):
+            summary[sp]["by_task"][k] = sum(v) / len(v) if isinstance(v, list) and v else 0.0
+        for k, acc in list(summary[sp]["by_category"].items()):
+            summary[sp]["by_category"][k] = acc[0] / acc[1] if isinstance(acc, list) and acc[1] else 0.0
 
 
 def evaluate_folder_model(model_name, model_path, gt_image_base, output_dir, device="cuda"):

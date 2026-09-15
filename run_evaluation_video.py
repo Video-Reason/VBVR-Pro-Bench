@@ -63,7 +63,7 @@ class NumpyEncoder(json.JSONEncoder):
 sys.path.insert(0, str(Path(__file__).parent))
 
 from vbvr_pro_bench.evaluators import (
-    get_evaluator, TASK_EVALUATOR_MAP, get_task_category,
+    get_evaluator, TASK_EVALUATOR_MAP, get_task_category, get_task_categories,
     is_out_of_domain, get_split,
 )
 
@@ -229,8 +229,13 @@ def aggregate_score(results: dict, sample_result: dict):
         results['summary'][key]['by_task'].setdefault(task_name, [])
         results['summary'][key]['by_task'][task_name].append(score)
 
-        results['summary'][key]['by_category'].setdefault(category, [])
-        results['summary'][key]['by_category'][category].append(score)
+        # Multi-label: a task's score is shared equally across its categories
+        cats = get_task_categories(task_name)
+        w = 1.0 / len(cats)
+        for c in cats:
+            acc = results['summary'][key]['by_category'].setdefault(c, [0.0, 0.0])
+            acc[0] += score * w
+            acc[1] += w
 
 
 
@@ -250,9 +255,9 @@ def finalize_summary(results: dict):
                 sum(task_scores) / len(task_scores) if isinstance(task_scores, list) else task_scores
             )
 
-        for category, cat_scores in results['summary'][split]['by_category'].items():
+        for category, acc in results['summary'][split]['by_category'].items():
             results['summary'][split]['by_category'][category] = (
-                sum(cat_scores) / len(cat_scores) if isinstance(cat_scores, list) else cat_scores
+                acc[0] / acc[1] if isinstance(acc, list) and acc[1] else 0.0
             )
 
 

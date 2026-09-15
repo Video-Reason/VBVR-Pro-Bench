@@ -266,17 +266,6 @@ Each model produces `{output_dir}/{model_name}_vbvr_results.json`. With
 }
 ```
 
-Aggregates are reported per split, per task, and per cognitive category. The 100
-tasks break down as:
-
-| Category | Tasks |
-|---|---|
-| Perception | 28 |
-| Abstraction | 25 |
-| Knowledge | 19 |
-| Spatiality | 16 |
-| Transformation | 12 |
-
 Report `Out_of_Domain` for generalization: those task families do not appear in
 the VBVR-Pro training splits.
 
